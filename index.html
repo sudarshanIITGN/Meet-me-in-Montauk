@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Postcard Maker (Front Side)</title>
+  <script src="js/fabric.min.js"></script> <!--this is a custom js. The erasor will not work w/o this-->
+  <script src="js/fabric.brushes.min.js"></script> <!--this too is customised for the crayon brush-->
+  <link rel="stylesheet" href="style.css">
+
+  
+  <style> /*this is the css part. decorates the main frames and the canvas*/
+    body { 
+      text-align: center; 
+      background: white; 
+      font-family: Arial, sans-serif;
+      /*background: url('bg.jpg') no-repeat center center fixed;*/
+    }
+    .canvas-container { 
+      margin: 20px auto; 
+      border: 2px solid #ccc; 
+      box-shadow: 2px 2px 10px rgba(0,0,0,0.1); 
+    }
+    button, input[type="color"] { 
+      margin: 5px; 
+      padding: 8px 15px; 
+      border: none; 
+      border-radius: 6px; 
+      cursor: pointer; 
+    }
+    button:hover { 
+      background: #e3e3e3; 
+    }
+  </style>
+</head>
+
+<body>
+  <!-- background corner images -->
+  <img src="top-left.jpg" class="corner corner-tl">
+  <img src="topr.jpg" class="corner corner-tr">
+  <img src="bottom-left.jpg" class="corner corner-bl">
+  <!--<img src="bottom-right (5).jpg" class="corner corner-br"> -->
+  <img src="br5.jpg" class="corner corner-br">
+  
+  <!--cut this experimental part out later-->
+  <!--title, undecorated for now-->
+  <!--<h1>Meet me in Montauk</h1>-->
+  <img id="headingImage" src="heading2.png" alt="Meet Me in Montauk" class="heading">
+  <!--taking the photo input-->
+  <input type="file" id="uploadImage" accept="image/*">
+  <input type="file" id="uploadstampImage" accept="image/*">
+  
+
+  <!-- Toolbar, will decorate with icons and fonts later-->
+  <div>
+    <button onclick="addText1()">🔤 Text1</button>
+    <button onclick="addText2()">🔤 Text2</button>
+    <button onclick="setBrush('pencil')">✏️ Pencil</button>
+    <button onclick="setBrush('pen')">🖊️ Pen</button>
+    <button onclick="setBrush('crayon')">🖍️ Crayon</button>
+    <button onclick="setBrush('eraser')">🩹 Eraser</button>
+    <input type="color" id="colorPicker" onchange="setColor(this.value)" value="#000000">
+    <button onclick="clearCanvas1()">🧹 Clear1</button>
+    <button onclick="clearCanvas2()">🧹 Clear2</button>
+    <button onclick="download()">⬇️ Download</button>
+  </div>
+
+  <!-- Postcard Canvas -->
+  <!--main drawing area, handled by fabric js--> <!--800,563-->
+  <canvas id="frontCanvas" width="600" height="400"></canvas>
+  <canvas id="backCanvas" width="600" height="400"></canvas> 
+
+  <script> /*js component starts. Inits new canvas item, taking names and dimensions from canvas id*/
+    const canvas = new fabric.Canvas('frontCanvas');
+    const canvas2 = new fabric.Canvas('backCanvas'); //setting the second canvas, the back of the pc
+    
+    //the text box would be removed with a delete button now
+    document.addEventListener('keydown', function(event) {
+      if (event.key === "Delete") {
+        if (canvas.getActiveObject()) {
+          canvas.remove(canvas.getActiveObject());
+          canvas.requestRenderAll();
+        }
+        if (canvas2.getActiveObject()) {
+          canvas2.remove(canvas2.getActiveObject());
+          canvas2.requestRenderAll();
+        }
+      }
+    });
+    //creating a photoframe
+    const photoFrame = new fabric.Rect({
+      originX: 'center',
+      originY: 'center',
+      left: canvas2.width/2,
+      top: canvas2.height/2,
+      width: canvas2.width-50,
+      height: canvas2.height-40,
+      fill: 'transparent',
+      stroke: '#3c7341',
+      strokeWidth: 0,
+      selectable: false
+    })
+    //adding the frame to canvas2
+    canvas2.add(photoFrame)
+
+    const fileInput2 = document.getElementById('uploadImage');
+
+    fileInput2.addEventListener('change', function(e){
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(f) {
+        fabric.Image.fromURL(f.target.result, function(img){
+
+          img.scaleToWidth(photoFrame.width-10);
+          img.scaleToHeight(photoFrame.height-10);
+
+          img.set({
+            originX: 'center',
+            originY: 'center',
+            left: photoFrame.left,
+            top: photoFrame.top,
+            selectable: false,
+            evented: false,
+            erasable: false
+          });
+
+          canvas2.add(img);
+          canvas2.sendToBack(img);
+        });
+      };
+      reader.readAsDataURL(file);
+    });
+
+    //creating a stampframe
+    const stampFrame = new fabric.Rect({
+      originX: 'center',
+      originY: 'center',
+      left: 523,
+      top: 80,
+      width: 82,
+      height: 125,
+      fill: 'transparent',
+      stroke: '#3c7341',
+      strokeWidth: 0,
+      selectable: false,
+      angle: 5
+    })
+    //adding the frame to canvas1
+    canvas.add(stampFrame)
+
+    const fileInput = document.getElementById('uploadstampImage');
+
+    fileInput.addEventListener('change', function(e){
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(f) {
+        fabric.Image.fromURL(f.target.result, function(img){
+          
+          //calculing the scale ratios for width and height
+          let scaleX = stampFrame.width / img.width;
+          let scaleY = stampFrame.height / img.height;
+          //picking the smaller one to make the pic fit
+          let scale = Math.min(scaleX,scaleY);
+          scale *= 1.1;
+
+          img.set({
+            originX: 'center',
+            originY: 'center',
+            left: stampFrame.left,
+            top: stampFrame.top,
+            angle: stampFrame.angle,
+            scaleX: scale,
+            scaleY: scale,
+            selectable: false,
+            evented: false,
+            erasable: false
+          });
+
+          canvas.add(img);
+          canvas.sendToBack(img);
+        });
+      };
+      reader.readAsDataURL(file);
+    });
+
+    /*making sure customs fonts are loaded*/
+    document.fonts.ready.then(()=>{
+      console.log("Custom fonts loaded!");
+    });
+
+    /*making all drawn paths are erasable. Except for the canvas bg, which is set to false later*/
+    canvas.on('path:created', function(options) {
+      options.path.erasable = true;
+    })
+    canvas2.on('path:created', function(options) {
+      options.path.erasable = true;
+    })    
+    fabric.Object.prototype.erasable = true;
+    //track which canvas is active
+    let activeCanvas = null;
+
+    canvas.on('selection:created', () => activeCanvas = canvas);
+    canvas.on('selection:updated', () => activeCanvas = canvas);
+    canvas2.on('selection:created', () => activeCanvas = canvas2);
+    canvas2.on('selection:updated', () => activeCanvas = canvas2);
+    canvas.on('selection:cleared', () => activeCanvas = null);
+    canvas2.on('selection:cleared', () => activeCanvas = null);
+
+    /*loading the bg that sets on the canvas*/
+    const postcardImage = '66.png';  
+    /*bg image is scaled to canvas width and erasable param set to false*/
+    fabric.Image.fromURL(postcardImage, function(img) {
+      img.scaleToWidth(canvas.width);
+      img.set({ erasable: false });
+      canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
+    });
+
+    /*loading the bg that sets on the canvas2*/
+    const postcardbackImage = '8.png';  
+    /*bg image is scaled to canvas width and erasable param set to false*/
+    fabric.Image.fromURL(postcardbackImage, function(img) {
+      img.scaleToWidth(canvas2.width);
+      img.set({ erasable: false });
+      canvas2.setBackgroundImage(img, canvas2.renderAll.bind(canvas2));
+    });
+
+    //default drawing conditions and brush settings for canvas1
+    canvas.isDrawingMode = true; /*set mode to false if not want to start drawing immediately*/
+    canvas.freeDrawingBrush = new fabric.PencilBrush(canvas); //ties pencil brush to the (canvas)
+    canvas.freeDrawingBrush.width = 2;
+    canvas.freeDrawingBrush.color = "#000000";
+
+    //default drawing condition and brush settings for canvas 2
+    canvas2.isDrawingMode = true; /*set mode to false if not want to start drawing immediately*/ 
+    canvas2.freeDrawingBrush = new fabric.PencilBrush(canvas2); //ties pencil brush to (canvas2)
+    canvas2.freeDrawingBrush.width = 2;
+    canvas2.freeDrawingBrush.color = "#000000";    
+
+    /*if-else logic sets for selecting brushes, depending on buttons clicks*/
+      //tried doing this instead of having two brushes (didn't work):
+        //const brush = new fabric.PencilBrush(canvas, canvas2); 
+        // //fabric brushes do not bind to multiple canvases, so they only accept the 1st arg and leave out canvas2
+    function setBrush(type) {
+      let brush1, brush2;
+      
+      if (type === 'pencil') {
+        brush1 = new fabric.PencilBrush(canvas);
+        brush1.width = 1;
+        brush1.color = "rgba(123,116,116,0.38)";
+
+        brush2 = new fabric.PencilBrush(canvas2);
+        brush2.width = 1;
+        brush2.color = "rgba(123,116,116,0.38)";
+
+      } else if (type === 'pen') {
+        brush1 = new fabric.PencilBrush(canvas);
+        brush1.width = 2;
+        brush1.color = "rgba(18,109,165)";
+
+        brush2 = new fabric.PencilBrush(canvas2);
+        brush2.width = 2;
+        brush2.color = "rgba(18,109,165)";
+
+      } else if (type === 'crayon') {
+        brush1 = new fabric.CrayonBrush(canvas);
+        brush1.width = 5;
+        brush1.color = document.getElementById("colorPicker").value;
+
+        brush2 = new fabric.CrayonBrush(canvas2);
+        brush2.width = 5;
+        brush2.color = document.getElementById("colorPicker").value;
+
+      } else if (type === 'eraser') {
+        brush1 = new fabric.EraserBrush(canvas);
+        brush1.width = 20;
+
+        brush2 = new fabric.EraserBrush(canvas2);
+        brush2.width = 20;
+      }
+
+      canvas.freeDrawingBrush = brush1;
+      canvas2.freeDrawingBrush = brush2;
+      canvas.isDrawingMode = true;
+      canvas2.isDrawingMode = true;
+    }
+    //text writing fn is kept seperate bcz not a brush
+    //drawing mode set to F bcz the default state is with brushes
+    //so can't click on text with brushes on
+    function addText1() { 
+      canvas.isDrawingMode = false;
+      //const color = document.getElementById("colorPicker".value);
+      const textbox = new fabric.Textbox('Type here...', {
+        left: 100,
+        top: 100,
+        width: 200,
+        fontSize: 24,
+        fill: document.getElementById("colorPicker").value, //text color selector
+        editable: true,
+        fontFamily: 'HillSide',  // custom font
+      });
+      canvas.add(textbox).setActiveObject(textbox);
+      canvas.renderAll();
+    }
+    function addText2() { 
+      canvas2.isDrawingMode = false;
+      //const color = document.getElementById("colorPicker".value);
+      const textbox = new fabric.Textbox('Type here...', {
+        left: 100,
+        top: 100,
+        width: 200,
+        fontSize: 24,
+        fill: document.getElementById("colorPicker").value, //text color selector
+        editable: true,
+        fontFamily: 'HillSide',  // custom font
+      });
+      canvas2.add(textbox).setActiveObject(textbox);
+      canvas2.renderAll();
+    }
+
+    document.getElementById("colorPicker").addEventListener("input",function(){
+      const color = this.value;
+      
+      if (activeCanvas) {
+        const activeObj = activeCanvas.getActiveObject();
+        if (activeObj && activeObj.type === "textbox") {
+          activeObj.set("fill",color);
+          activeCanvas.renderAll();
+        }
+      }
+    });
+    
+    //updates the brush color based on user selecn
+    function setColor(color) {
+      if (canvas.freeDrawingBrush) {
+        canvas.freeDrawingBrush.color = color;
+      }
+      if (canvas2.freeDrawingBrush) {
+        canvas2.freeDrawingBrush.color = color;
+      }
+    }
+    //clear canvas button logic
+    //clears entire canvas along with bg
+    //renders bg back and sets to non erasable again
+    function clearCanvas1() {
+      canvas.clear();
+      fabric.Image.fromURL(postcardImage, function(img) {
+        img.scaleToWidth(canvas.width);
+        img.set({ erasable: false });
+        canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
+      });
+    }
+    //clearing logic for canvas2
+    function clearCanvas2() {
+      canvas2.clear();
+      fabric.Image.fromURL(postcardbackImage, function(img) {
+        img.scaleToWidth(canvas2.width);
+        img.set({ erasable: false });
+        canvas2.setBackgroundImage(img, canvas2.renderAll.bind(canvas2));
+      });
+    }
+    //download button logic
+    function download() {
+      //a bit of gap b/w the two canvases
+      const gap = 20; //keeping 20px
+      //create new canvas with combined height
+      const combinedCanvas = document.createElement("canvas");
+      combinedCanvas.width = canvas.lowerCanvasEl.width;
+      combinedCanvas.height = canvas.lowerCanvasEl.height + canvas2.lowerCanvasEl.height + gap;
+
+      const ctx = combinedCanvas.getContext("2d");
+
+      //putting the bg white (might delete this)
+      ctx.fillStyle = "white";
+      ctx.fillRect(0,0,combinedCanvas.width, combinedCanvas.height);
+
+      //draw front
+      ctx.drawImage(canvas.lowerCanvasEl, 0, 0);
+      //draw back below
+      ctx.drawImage(canvas2.lowerCanvasEl, 0, canvas.lowerCanvasEl.height + gap);
+
+      //download as jpg
+      const link = document.createElement('a');
+      link.href = combinedCanvas.toDataURL('image/jpeg',1.0);
+      link.download = 'postcard_combined.jpg';
+      link.click();
+    }
+
+  </script>
+
+</body>
+</html>
+
+

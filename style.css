@@ -1,0 +1,48 @@
+
+
+@font-face {
+  font-family: "HillSide";
+  src: url('fonts/Hillside_Script.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Crayon Pastel";
+  src: url('fonts/Crayon\ pastel.otf') format('opentype');
+}
+
+/* add similar blocks for Alternates2, Alternates3, Sketches if needed */
+
+body {
+  font-family: "Hillside";
+}
+h1 {
+  font-size: 100px;   /* make it bigger than default */
+  font-weight: bold; /* adjust thickness */
+  text-align: center;
+  color: #283c65;
+}
+.heading {
+  display: block;
+  margin: 20px auto;
+  max-width: 80%;   /* keep it responsive */
+  height: auto;
+}
+.corner {
+  position: fixed;      /* stays fixed, doesn’t scroll */
+  z-index: -1;          /* behind all content */
+  width: 150px;         /* adjust size */
+  height: auto;
+  opacity: 0.8;         /* optional transparency */
+  pointer-events: none; /* don’t block clicks */
+}
+
+.corner-tl { top: 0; left: 0; }
+.corner-tr { top: 0; right: 0; }
+.corner-bl { bottom: 0; left: 0; }
+.corner-br { bottom: 0; right: 0; }
+.corner-tl { width: 25vw; } /* 15% of viewport width */
+.corner-tr { width: 27vw; }
+.corner-bl { width: 35vw; }
+.corner-br { width: 32vw; }
+
