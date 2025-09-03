@@ -37,7 +37,8 @@
   <!-- background corner images -->
   <img src="top-left.jpg" class="corner corner-tl">
   <img src="topr.jpg" class="corner corner-tr">
-  <img src="bottom-left.jpg" class="corner corner-bl">
+  <!--<img src="bottom-left.jpg" class="corner corner-bl"> "bottom-left-removebg-preview.png" -->
+  <img src="bottom-left-removebg-preview.png" class="corner corner-bl">
   <!--<img src="bottom-right (5).jpg" class="corner corner-br"> -->
   <img src="br5.jpg" class="corner corner-br">
   
@@ -46,28 +47,53 @@
   <!--<h1>Meet me in Montauk</h1>-->
   <img id="headingImage" src="heading2.png" alt="Meet Me in Montauk" class="heading">
   <!--taking the photo input-->
-  <input type="file" id="uploadImage" accept="image/*">
-  <input type="file" id="uploadstampImage" accept="image/*">
+  
   
 
   <!-- Toolbar, will decorate with icons and fonts later-->
-  <div>
-    <button onclick="addText1()">🔤 Text1</button>
-    <button onclick="addText2()">🔤 Text2</button>
-    <button onclick="setBrush('pencil')">✏️ Pencil</button>
-    <button onclick="setBrush('pen')">🖊️ Pen</button>
-    <button onclick="setBrush('crayon')">🖍️ Crayon</button>
-    <button onclick="setBrush('eraser')">🩹 Eraser</button>
-    <input type="color" id="colorPicker" onchange="setColor(this.value)" value="#000000">
-    <button onclick="clearCanvas1()">🧹 Clear1</button>
-    <button onclick="clearCanvas2()">🧹 Clear2</button>
-    <button onclick="download()">⬇️ Download</button>
+  <div class="toolbar">
+    <button onclick="setBrush('pencil')" class="toolbar-btn">✏️ Pencil</button>
+    <button onclick="setBrush('pen')" class="toolbar-btn">🖊️ Pen</button>
+    <button onclick="setBrush('eraser')" class="toolbar-btn">🩹 Eraser</button>
+
+    <input type="color" id="colorPicker" onchange="setColor(this.value)" value="#000000" hidden>
+    <label for="colorPicker" class="toolbar-btn">🎨 Color</label>
+
+    
+    
+    <button onclick="download()" class="toolbar-btn">⬇️ Download</button>
   </div>
 
   <!-- Postcard Canvas -->
   <!--main drawing area, handled by fabric js--> <!--800,563-->
-  <canvas id="frontCanvas" width="600" height="400"></canvas>
-  <canvas id="backCanvas" width="600" height="400"></canvas> 
+  <div class="canvas-grid top-canvas">
+    <!--left column, text&stamp-->
+    <div class="side-controls">
+      <button onclick="addText1()">💬 Type Text</button>
+      <!--hiding the input button because normally its too long-->
+      <input type="file" id="uploadstampImage" accept="image/*" hidden> 
+      <!--making a custom button instead that triggers the same id-->
+      <label for="uploadstampImage" class="upload-btn">📮 Upload Stamp</label>
+      <button onclick="clearCanvas1()" class="clear-btn">🧹 Clear</button>
+    </div>
+  <!--right canvas column-->
+    <canvas id="frontCanvas" width="600" height="400"></canvas>
+  </div>
+
+  <div class="canvas-grid bottom-canvas">
+    <!--left canvas-->
+    <div class="side-controls">
+      <!--doing the same hiding and replacing here-->
+      <button onclick="addText2()">💬 Type Text</button>
+      <input type="file" id="uploadImage" accept="image/*" hidden>
+      <label for="uploadImage" class="upload-btn">🖼️ Upload Picture</label>
+      <button onclick="clearCanvas2()" class="clear-btn">🧹 Clear</button>
+    </div>
+    <!--right canvas-->
+    <canvas id = "backCanvas" width="600" height="400"></canvas>
+  </div>
+  <!--<canvas id="frontCanvas" width="600" height="400"></canvas>-->
+  <!--<canvas id="backCanvas" width="600" height="400"></canvas> -->
 
   <script> /*js component starts. Inits new canvas item, taking names and dimensions from canvas id*/
     const canvas = new fabric.Canvas('frontCanvas');
