@@ -46,3 +46,70 @@ h1 {
 .corner-bl { width: 35vw; }
 .corner-br { width: 32vw; }
 
+.canvas-grid {
+  display: grid;
+  grid-template-columns: 150px 600px; /* two columns: button + canvas */
+  justify-content: center;          /* center grid on page */
+  align-items: start;
+  gap: 5px;                        /* space between them */
+  margin: 10px 0;
+  margin-left: -170px;
+}
+.side-controls{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+.upload-btn{
+  display: inline-block;
+  padding: 8px 15px;
+  border-radius: 6px;
+  background: #68a3e254;
+  cursor: pointer;
+  text-align: center;
+  font-size: 14px;
+}
+.upload-btn:hover {
+  background: #a8d2f7;   /* slightly darker on hover */
+}
+.toolbar-btn {
+  display: inline-block;
+  padding: 8px 15px;
+  border-radius: 6px;
+  background: #e3e8ee;   /* light blue for toolbar */
+  cursor: pointer;
+  text-align: center;
+  font-size: 14px;
+  border: none;
+}
+.toolbar-btn:hover {
+  background: #a8d2f7;   /* slightly darker on hover */
+}
+.clear-btn {
+  display: inline-block;
+  padding: 8px 15px;
+  border-radius: 6px;
+  background: #f7d2d2;   /* light blue for toolbar */
+  cursor: pointer;
+  text-align: center;
+  font-size: 14px;
+  border: none;
+}
+.clear-btn:hover {
+  background: #f08787;   /* slightly darker on hover */
+
+.canvas-grid button {
+  /*align-self: start;*/
+  margin-top: 20px;  /* moves button up */
+}
+.top-canvas{
+  margin-bottom: 5px;
+  
+}
+.bottom-canvas{
+  margin-top: 5px;
+}
+
+
