@@ -111,9 +111,48 @@ h1 {
 .bottom-canvas{
   margin-top: 5px;
 }
-.fabric-textinput {
-  font-size: 16px !important;
+/* ---------------------- */
+/* 📱 Mobile Adjustments  */
+/* ---------------------- */
+@media (max-width: 600px) {
+
+  input, textarea, .fabric-textinput {
+    font-size: 16px !important;
+  }
+
+  button, .toolbar-btn, .upload-btn, .clear-btn {
+    font-size: 22px;
+    min-width: 80px;
+    min-height: 50px;
+    padding: 12px 18px;
+  }
+
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .canvas-grid {
+    grid-template-columns: 1fr;   /* single column */
+    justify-items: center;
+    gap: 12px;
+  }
+
+  .canvas-grid canvas {
+    order: 1;   /* canvas always on top */
+  }
+
+  .canvas-grid .side-controls {
+    order: 2;   /* side controls below */
+    flex-direction: row;
+    justify-content: center;
+    gap: 15px;
+  }
 }
+
+
 
 
 
