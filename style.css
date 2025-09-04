@@ -99,7 +99,7 @@ h1 {
 }
 .clear-btn:hover {
   background: #f08787;   /* slightly darker on hover */
-
+}
 .canvas-grid button {
   /*align-self: start;*/
   margin-top: 20px;  /* moves button up */
@@ -156,6 +156,7 @@ h1 {
     gap: 15px;
   }
 }
+
 
 
 
