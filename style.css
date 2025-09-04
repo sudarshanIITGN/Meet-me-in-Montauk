@@ -140,6 +140,11 @@ h1 {
     gap: 12px;
   }
 
+  canvas {
+    max-width: 100%;
+    height: auto;
+  }
+
   .canvas-grid canvas {
     order: 1;   /* canvas always on top */
   }
@@ -151,6 +156,7 @@ h1 {
     gap: 15px;
   }
 }
+
 
 
 
