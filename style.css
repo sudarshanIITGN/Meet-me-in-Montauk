@@ -111,14 +111,10 @@ h1 {
 .bottom-canvas{
   margin-top: 5px;
 }
-
-/* ---------------------- */
-/* 📱 Mobile Adjustments  */
-/* ---------------------- */
-@media (max-width: 600px) {
-  input, textarea, .fabric-textbox, .fabric-textinput {
-    font-size: 16px !important;
-  }
+input, textarea, .fabric-textbox, .fabric-textinput {
+  font-size: 16px !important;
 }
+
+
 
 
