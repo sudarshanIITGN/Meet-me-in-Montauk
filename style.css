@@ -110,17 +110,15 @@ h1 {
 }
 .bottom-canvas{
   margin-top: 5px;
+  
+input, textarea, .fabric-textinput {
+  font-size: 16px !important;
+}
 }
 /* ---------------------- */
 /* 📱 Mobile Adjustments  */
 /* ---------------------- */
-@media (max-width: 600px) {
 
-  /* prevent zoom chaos when typing */
-  input, textarea, .fabric-textinput {
-    font-size: 16px !important;
-  }
-}
 
 
 
